@@ -5,12 +5,16 @@ import "./App.css";
 function App() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
       .get(`https://randomuser.me/api/?page=${page}&results=${25}`)
-      .then((res) => setUsers(res.data.results));
+      .then((res) => {
+        setLoading(true);
+        setUsers((prev) => [...prev, ...res.data.results]);
+        setLoading(false);
+      });
   }, []);
 
   return (
