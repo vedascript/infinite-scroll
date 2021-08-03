@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
+let flag = true;
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -15,14 +16,33 @@ function App() {
         setUsers((prev) => [...prev, ...res.data.results]);
         setLoading(false);
       });
-  }, []);
+  }, [page]);
+
+  const scrollFurtherDown = () => {
+    setPage((prev) => prev + 1);
+    console.log(page);
+  };
+
+  window.onscroll = function () {
+    if (window.innerHeight + window.pageYOffset > document.body.offsetHeight) {
+      if (flag) {
+        scrollFurtherDown();
+        flag = false;
+      }
+      setTimeout(function () {
+        flag = true;
+      }, 1000);
+    }
+  };
 
   return (
     <div className="App">
       <h2>Infinite Scroll</h2>
       <div>
         {users?.map((user, ind) => (
-          <div key={ind}>{user.name.first}</div>
+          <div className="userCont" key={ind}>
+            {user.name.first}
+          </div>
         ))}
       </div>
       {loading && "Loading........"}
